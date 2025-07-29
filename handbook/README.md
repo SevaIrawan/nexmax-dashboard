@@ -1,97 +1,83 @@
-# NEXMAX Dashboard - Handbook Dokumentasi
+# NEXMAX Dashboard - Complete Documentation Handbook
 
-## 📖 Daftar Isi
+## 📋 Overview
+Dokumentasi lengkap untuk NEXMAX Dashboard - sistem dashboard bisnis yang komprehensif dengan fitur analitik, manajemen transaksi, dan visualisasi data real-time.
 
-1. [Overview Dashboard](#overview-dashboard)
-2. [Arsitektur Sistem](#arsitektur-sistem)
-3. [Tahapan Build-up](#tahapan-build-up)
-4. [Maintenance & Logic](#maintenance--logic)
-5. [Settings & Configuration](#settings--configuration)
-6. [File yang Boleh Diedit](#file-yang-boleh-diedit)
-7. [File yang TIDAK BOLEH Diedit](#file-yang-tidak-boleh-diedit)
-8. [Korelasi File](#korelasi-file)
-9. [Troubleshooting](#troubleshooting)
-10. [Best Practices](#best-practices)
+## 📚 Struktur Dokumentasi
 
----
+### 1. [Architecture Overview](./01-architecture-overview.md)
+- Arsitektur sistem secara keseluruhan
+- Tech stack dan dependencies
+- Struktur folder dan file
 
-## 🎯 Overview Dashboard
+### 2. [Database Documentation](./02-database-documentation.md)
+- Struktur database PostgreSQL
+- Tabel dan relasi
+- Query dan API endpoints
 
-**NEXMAX Dashboard** adalah sistem analytics dan reporting yang komprehensif dengan:
+### 3. [Frontend Components](./03-frontend-components.md)
+- Komponen React yang digunakan
+- Layout dan styling
+- State management
 
-### ✅ Features Utama:
-- **Multi-User Role-Based Access Control** (Admin, Manager, Executive, Operator, User)
-- **Real-time Data Analytics** dari PostgreSQL
-- **Interactive Charts** menggunakan Chart.js
-- **Responsive Design** untuk desktop dan mobile
-- **Centralized Business Logic** untuk konsistensi data
-- **Export Functionality** (CSV/JSON)
+### 4. [Pages Documentation](./04-pages-documentation.md)
+- Dokumentasi semua halaman
+- Fitur dan fungsionalitas
+- Routing dan navigation
 
-### 🏗️ Tech Stack:
-- **Frontend**: Next.js 15.4.3, React
-- **Backend**: Next.js API Routes
-- **Database**: PostgreSQL
-- **Charts**: Chart.js
-- **Styling**: CSS Modules + Inline Styles
-- **Authentication**: Custom JWT-based auth
+### 5. [API Documentation](./05-api-documentation.md)
+- Endpoint API yang tersedia
+- Request/response format
+- Error handling
 
----
+### 6. [Styling & CSS](./06-styling-css.md)
+- Sistem styling yang digunakan
+- CSS architecture
+- Component styling
 
-## 📚 File Dokumentasi:
+### 7. [Business Logic](./07-business-logic.md)
+- Logika bisnis yang diimplementasi
+- Formula dan perhitungan
+- Business rules
 
-1. **[build-process.md](./build-process.md)** - Tahapan lengkap build-up dashboard
-2. **[maintenance-guide.md](./maintenance-guide.md)** - Cara maintain logic dan troubleshooting
-3. **[settings-configuration.md](./settings-configuration.md)** - Adjustment settings dashboard
-4. **[file-structure.md](./file-structure.md)** - Struktur file dan korelasi
-5. **[edit-permissions.md](./edit-permissions.md)** - File yang boleh/tidak boleh diedit
-6. **[business-logic.md](./business-logic.md)** - Dokumentasi business logic dan formula
-7. **[deployment-guide.md](./deployment-guide.md)** - Guide untuk deployment production
+### 8. [Deployment & Configuration](./08-deployment-configuration.md)
+- Setup dan konfigurasi
+- Environment variables
+- Deployment process
 
----
+### 9. [Troubleshooting](./09-troubleshooting.md)
+- Common issues dan solutions
+- Debugging guide
+- Performance optimization
+
+### 10. [Development Guide](./10-development-guide.md)
+- Panduan development
+- Coding standards
+- Best practices
 
 ## 🚀 Quick Start
+1. Baca [Architecture Overview](./01-architecture-overview.md) untuk memahami struktur sistem
+2. Lihat [Database Documentation](./02-database-documentation.md) untuk setup database
+3. Ikuti [Development Guide](./10-development-guide.md) untuk mulai development
 
-```bash
-# Install dependencies
-npm install
+## 📊 Dashboard Features
+- **Main Dashboard**: Overview KPI dan metrics utama
+- **Strategic Executive**: Analisis strategis dan forecasting
+- **Business Flow**: 4 modul analisis bisnis flow
+- **Transaction Management**: Deposit, Withdraw, Exchange, dll
+- **User Management**: Role-based access control
+- **Real-time Analytics**: Chart dan visualisasi data
 
-# Start development server
-npm run dev
+## 🔧 Tech Stack
+- **Frontend**: Next.js, React, Chart.js
+- **Backend**: Node.js, PostgreSQL
+- **Styling**: CSS Modules, Styled JSX
+- **Charts**: react-chartjs-2, Chart.js
+- **Authentication**: Custom auth system
 
-# Access dashboard
-http://localhost:3000
-```
-
-## 🔐 Default Login:
-- **Admin**: admin / admin123
-- **Manager**: manager / manager123
-- **Executive**: executive / exec123
-- **Operator**: operator / oper123
-- **User**: user / user123
-
----
-
-## ⚠️ CRITICAL RULES
-
-### 🔒 PRODUCTION-READY STATUS:
-Dashboard ini sudah **PRODUCTION-READY** dengan semua core features completed dan locked.
-
-### 🚫 TIDAK BOLEH DIUBAH tanpa permission:
-- Sidebar design dan functionality
-- Header layout dan styling  
-- Sub Header size dan positioning
-- Main Dashboard KPI cards dan charts
-- Strategic Executive page layout
-- Business Flow page structure
-- Role-based access control logic
-- Database connection dan query logic
-
-### ✅ BOLEH DIUBAH dengan hati-hati:
-- Content di pages yang belum developed (BGO, OS, SR, XOO, Transaction pages)
-- Business logic constants di `lib/business-logic.js`
-- Styling minor adjustments
-- New features yang tidak mengubah existing functionality
+## 📝 Maintenance
+Dokumentasi ini akan diupdate secara berkala sesuai dengan perubahan sistem. Untuk pertanyaan atau saran, silakan hubungi tim development.
 
 ---
-
-**📝 Note**: Sebelum melakukan perubahan apapun, WAJIB backup dan test di development environment terlebih dahulu! 
+*Last Updated: July 2025*
+*Version: 1.0* 
