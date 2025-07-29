@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRoleAccess } from '../../hooks/useRoleAccess';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
@@ -38,7 +38,20 @@ export default function Adjustment() {
   const [slicerLoading, setSlicerLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  const fetchSlicerOptions = useCallback(async () => {
+  useEffect(() => {
+    fetchSlicerOptions();
+    fetchAdjustmentData();
+  }, [fetchSlicerOptions, fetchAdjustmentData]);
+
+  useEffect(() => {
+    fetchSlicerOptions();
+  }, [currency, fetchSlicerOptions]);
+
+  useEffect(() => {
+    fetchAdjustmentData();
+  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage, fetchAdjustmentData]);
+
+  const fetchSlicerOptions = async () => {
     try {
       setSlicerLoading(true);
       const params = new URLSearchParams();
@@ -61,9 +74,9 @@ export default function Adjustment() {
     } finally {
       setSlicerLoading(false);
     }
-  }, [currency, line]);
+  };
 
-  const fetchAdjustmentData = useCallback(async () => {
+  const fetchAdjustmentData = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -94,21 +107,9 @@ export default function Adjustment() {
     } finally {
       setLoading(false);
     }
-  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage, pagination.recordsPerPage]);
+  };
 
-  useEffect(() => {
-    fetchSlicerOptions();
-    fetchAdjustmentData();
-  }, [fetchSlicerOptions, fetchAdjustmentData]);
-
-  useEffect(() => {
-    fetchSlicerOptions();
-  }, [fetchSlicerOptions]);
-
-  useEffect(() => {
-    fetchAdjustmentData();
-  }, [fetchAdjustmentData]);
-
+  // HANDLE MONTH SELECTION
   const handleMonthChange = (selectedMonth) => {
     setMonth(selectedMonth);
     setFilterMode('month');

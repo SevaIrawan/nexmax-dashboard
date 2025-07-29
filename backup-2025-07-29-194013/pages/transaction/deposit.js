@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRoleAccess } from '../../hooks/useRoleAccess';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import { formatDateDisplay, formatDateForInput, isDateColumn } from '../../utils/dateFormatter';
 
-export default function Adjustment() {
-  const { user, loading: authLoading, canExportData, isReadOnly } = useRoleAccess('/transaction/adjustment');
+export default function Deposit() {
+  const { user, loading: authLoading, canExportData, isReadOnly } = useRoleAccess('/transaction/deposit');
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   
   // SLICERS STATE
@@ -18,7 +18,7 @@ export default function Adjustment() {
   const [useDateRange, setUseDateRange] = useState(false);
 
   // DATA STATES
-  const [adjustmentData, setAdjustmentData] = useState([]);
+  const [depositData, setDepositData] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -38,7 +38,20 @@ export default function Adjustment() {
   const [slicerLoading, setSlicerLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  const fetchSlicerOptions = useCallback(async () => {
+  useEffect(() => {
+    fetchSlicerOptions();
+    fetchDepositData();
+  }, []);
+
+  useEffect(() => {
+    fetchSlicerOptions();
+  }, [currency]);
+
+  useEffect(() => {
+    fetchDepositData();
+  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage]);
+
+  const fetchSlicerOptions = async () => {
     try {
       setSlicerLoading(true);
       const params = new URLSearchParams();
@@ -46,7 +59,7 @@ export default function Adjustment() {
         params.append('selectedCurrency', currency);
       }
       
-      const response = await fetch(`/api/adjustment/slicer-options?${params}`);
+      const response = await fetch(`/api/deposit/slicer-options?${params}`);
       const result = await response.json();
       if (result.success) {
         setSlicerOptions(result.options);
@@ -61,9 +74,9 @@ export default function Adjustment() {
     } finally {
       setSlicerLoading(false);
     }
-  }, [currency, line]);
+  };
 
-  const fetchAdjustmentData = useCallback(async () => {
+  const fetchDepositData = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -78,37 +91,25 @@ export default function Adjustment() {
         limit: pagination.recordsPerPage.toString()
       });
 
-      const response = await fetch(`/api/adjustment/data?${params}`);
+      const response = await fetch(`/api/deposit/data?${params}`);
       const result = await response.json();
       
       if (result.success) {
-        setAdjustmentData(result.data);
+        setDepositData(result.data);
         setPagination(result.pagination);
       } else {
         console.error('Error fetching data:', result.error);
-        setAdjustmentData([]);
+        setDepositData([]);
       }
     } catch (error) {
-      console.error('Error fetching adjustment data:', error);
-      setAdjustmentData([]);
+      console.error('Error fetching deposit data:', error);
+      setDepositData([]);
     } finally {
       setLoading(false);
     }
-  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage, pagination.recordsPerPage]);
+  };
 
-  useEffect(() => {
-    fetchSlicerOptions();
-    fetchAdjustmentData();
-  }, [fetchSlicerOptions, fetchAdjustmentData]);
-
-  useEffect(() => {
-    fetchSlicerOptions();
-  }, [fetchSlicerOptions]);
-
-  useEffect(() => {
-    fetchAdjustmentData();
-  }, [fetchAdjustmentData]);
-
+  // HANDLE MONTH SELECTION
   const handleMonthChange = (selectedMonth) => {
     setMonth(selectedMonth);
     setFilterMode('month');
@@ -146,7 +147,7 @@ export default function Adjustment() {
 
     try {
       setExporting(true);
-      const response = await fetch('/api/adjustment/export', {
+      const response = await fetch('/api/deposit/export', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +175,7 @@ export default function Adjustment() {
         const contentDisposition = response.headers.get('content-disposition');
         const filename = contentDisposition 
           ? contentDisposition.split('filename=')[1].replace(/"/g, '')
-          : 'adjustment_export.xlsx';
+          : 'deposit_daily_export.xlsx';
         
         a.download = filename;
         document.body.appendChild(a);
@@ -206,7 +207,7 @@ export default function Adjustment() {
       <Sidebar user={user} onExpandedChange={setSidebarExpanded} />
       <div className={`dashboard-content ${sidebarExpanded ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
         <Header 
-          title="Adjustment"
+          title="Deposit Transactions"
           user={user}
           sidebarExpanded={sidebarExpanded}
           setSidebarExpanded={setSidebarExpanded}
@@ -406,16 +407,16 @@ export default function Adjustment() {
             {/* EXPORT BUTTON */}
             <button
               onClick={handleExport}
-              disabled={isReadOnly || !canExportData || exporting || adjustmentData.length === 0}
+              disabled={isReadOnly || !canExportData || exporting || depositData.length === 0}
               style={{
                 padding: '8px 16px',
                 borderRadius: '6px',
                 border: 'none',
                 fontSize: '14px',
                 fontWeight: '600',
-                backgroundColor: isReadOnly || !canExportData || adjustmentData.length === 0 ? '#f3f4f6' : '#10b981',
-                color: isReadOnly || !canExportData || adjustmentData.length === 0 ? '#9ca3af' : 'white',
-                cursor: isReadOnly || !canExportData || adjustmentData.length === 0 ? 'not-allowed' : 'pointer',
+                backgroundColor: isReadOnly || !canExportData || depositData.length === 0 ? '#f3f4f6' : '#10b981',
+                color: isReadOnly || !canExportData || depositData.length === 0 ? '#9ca3af' : 'white',
+                cursor: isReadOnly || !canExportData || depositData.length === 0 ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease'
               }}
             >
@@ -441,9 +442,9 @@ export default function Adjustment() {
               fontSize: '18px',
               color: '#6b7280'
             }}>
-              Loading adjustment data...
+              Loading deposit data...
             </div>
-          ) : adjustmentData.length === 0 ? (
+          ) : depositData.length === 0 ? (
             <div style={{
               display: 'flex',
               justifyContent: 'center',
@@ -454,31 +455,31 @@ export default function Adjustment() {
             }}>
               <div style={{ fontSize: '48px' }}>📭</div>
               <div style={{ fontSize: '18px', color: '#6b7280' }}>
-                No adjustment data found for the selected filters
+                No deposit data found for the selected filters
               </div>
             </div>
           ) : (
             <div className="data-table-container">
-              <div className="table-header">
-                <h2>Adjustment Data (Page {pagination.currentPage} of {pagination.totalPages})</h2>
-                <p style={{ margin: '8px 0 0 0', color: '#6b7280', fontSize: '14px' }}>
-                  Showing {adjustmentData.length} of {pagination.totalRecords.toLocaleString()} records
-                </p>
-              </div>
-              
-              <div className="table-wrapper">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      {adjustmentData.length > 0 && Object.keys(adjustmentData[0]).map((column, index) => (
-                        <th key={index}>{column.replace(/_/g, ' ').toUpperCase()}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {adjustmentData.map((row, rowIndex) => (
-                      <tr key={rowIndex}>
-                                                 {Object.entries(row).map(([column, value], colIndex) => (
+                             <div className="table-header">
+                 <h2>Deposit Daily Data (Page {pagination.currentPage} of {pagination.totalPages})</h2>
+                 <p style={{ margin: '8px 0 0 0', color: '#6b7280', fontSize: '14px' }}>
+                   Showing {depositData.length} of {pagination.totalRecords.toLocaleString()} records
+                 </p>
+               </div>
+               
+               <div className="table-wrapper">
+                 <table className="data-table">
+                   <thead>
+                     <tr>
+                       {depositData.length > 0 && Object.keys(depositData[0]).map((column, index) => (
+                         <th key={index}>{column.replace(/_/g, ' ').toUpperCase()}</th>
+                       ))}
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {depositData.map((row, rowIndex) => (
+                       <tr key={rowIndex}>
+                         {Object.entries(row).map(([column, value], colIndex) => (
                            <td key={colIndex}>
                              {isDateColumn(column) 
                                ? formatDateDisplay(value)
@@ -488,36 +489,36 @@ export default function Adjustment() {
                              }
                            </td>
                          ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
 
-              {/* PAGINATION CONTROLS */}
-              {pagination.totalPages > 1 && (
-                <div className="pagination-controls">
-                  <button
-                    onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
-                    disabled={!pagination.hasPrevPage}
-                    className="pagination-btn"
-                  >
-                    ← Previous
-                  </button>
-                  
-                  <span className="pagination-info">
-                    Page {pagination.currentPage} of {pagination.totalPages}
-                  </span>
-                  
-                  <button
-                    onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
-                    disabled={!pagination.hasNextPage}
-                    className="pagination-btn"
-                  >
-                    Next →
-                  </button>
-                </div>
-              )}
+               {/* PAGINATION CONTROLS */}
+               {pagination.totalPages > 1 && (
+                 <div className="pagination-controls">
+                   <button
+                     onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
+                     disabled={!pagination.hasPrevPage}
+                     className="pagination-btn"
+                   >
+                     ← Previous
+                   </button>
+                   
+                   <span className="pagination-info">
+                     Page {pagination.currentPage} of {pagination.totalPages}
+                   </span>
+                   
+                   <button
+                     onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
+                     disabled={!pagination.hasNextPage}
+                     className="pagination-btn"
+                   >
+                     Next →
+                   </button>
+                 </div>
+               )}
           </div>
           )}
         </div>
@@ -565,11 +566,11 @@ export default function Adjustment() {
           font-weight: 600;
         }
 
-        .table-wrapper {
-          overflow: auto;
-          height: calc(100vh - 400px);
-          max-height: calc(100vh - 400px);
-        }
+                 .table-wrapper {
+           overflow: auto;
+           height: calc(100vh - 400px);
+           max-height: calc(100vh - 400px);
+         }
 
         .data-table {
           width: 100%;
@@ -609,81 +610,81 @@ export default function Adjustment() {
           background: #fafafa;
         }
 
-        .data-table tbody tr:nth-child(even):hover {
-          background: #f0f0f0;
-        }
+                 .data-table tbody tr:nth-child(even):hover {
+           background: #f0f0f0;
+         }
 
-        /* Pagination Controls */
-        .pagination-controls {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          gap: 16px;
-          padding: 20px;
-          background: #f8fafc;
-          border-top: 1px solid #e2e8f0;
-        }
+         /* Pagination Controls */
+         .pagination-controls {
+           display: flex;
+           justify-content: flex-end;
+           align-items: center;
+           gap: 16px;
+           padding: 20px;
+           background: #f8fafc;
+           border-top: 1px solid #e2e8f0;
+         }
 
-        .pagination-btn {
-          padding: 8px 16px;
-          border: 1px solid #d1d5db;
-          background: white;
-          color: #374151;
-          border-radius: 6px;
-          cursor: pointer;
-          font-weight: 500;
-          transition: all 0.2s ease;
-        }
+         .pagination-btn {
+           padding: 8px 16px;
+           border: 1px solid #d1d5db;
+           background: white;
+           color: #374151;
+           border-radius: 6px;
+           cursor: pointer;
+           font-weight: 500;
+           transition: all 0.2s ease;
+         }
 
-        .pagination-btn:hover:not(:disabled) {
-          background: #f3f4f6;
-          border-color: #9ca3af;
-        }
+         .pagination-btn:hover:not(:disabled) {
+           background: #f3f4f6;
+           border-color: #9ca3af;
+         }
 
-        .pagination-btn:disabled {
-          background: #f3f4f6;
-          color: #9ca3af;
-          cursor: not-allowed;
-        }
+         .pagination-btn:disabled {
+           background: #f3f4f6;
+           color: #9ca3af;
+           cursor: not-allowed;
+         }
 
-        .pagination-info {
-          font-weight: 500;
-          color: #6b7280;
-          font-size: 14px;
-        }
+         .pagination-info {
+           font-weight: 500;
+           color: #6b7280;
+           font-size: 14px;
+         }
 
-        /* Scrollbar styling */
-        .table-wrapper::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
-        }
+         /* Scrollbar styling */
+         .table-wrapper::-webkit-scrollbar {
+           width: 8px;
+           height: 8px;
+         }
 
-        .table-wrapper::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 4px;
-        }
+         .table-wrapper::-webkit-scrollbar-track {
+           background: #f1f1f1;
+           border-radius: 4px;
+         }
 
-        .table-wrapper::-webkit-scrollbar-thumb {
-          background: #c1c1c1;
-          border-radius: 4px;
-        }
+         .table-wrapper::-webkit-scrollbar-thumb {
+           background: #c1c1c1;
+           border-radius: 4px;
+         }
 
-        .table-wrapper::-webkit-scrollbar-thumb:hover {
-          background: #a8a8a8;
-        }
+         .table-wrapper::-webkit-scrollbar-thumb:hover {
+           background: #a8a8a8;
+         }
         
-        @media (max-width: 768px) {
-          .table-wrapper {
-            height: calc(100vh - 450px);
-            max-height: calc(100vh - 450px);
-          }
-          
-          .data-table th,
-          .data-table td {
-            padding: 8px 12px;
-            font-size: 12px;
-          }
-        }
+                 @media (max-width: 768px) {
+           .table-wrapper {
+             height: calc(100vh - 450px);
+             max-height: calc(100vh - 450px);
+           }
+           
+           .data-table th,
+           .data-table td {
+             padding: 8px 12px;
+             font-size: 12px;
+           }
+         }
       `}</style>
     </div>
   );

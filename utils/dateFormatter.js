@@ -80,7 +80,7 @@ export const formatDateForInput = (dateValue) => {
  * @returns {boolean} - True if it's a date column
  */
 export const isDateColumn = (columnName) => {
-  const dateColumns = ['date', 'created_at', 'updated_at', 'transaction_date', 'created_date', 'modified_date', 'create_date'];
+  const dateColumns = ['date', 'created_at', 'updated_at', 'transaction_date', 'created_date', 'modified_date', 'create_date', 'register_date', 'first_deposit_date'];
   return dateColumns.includes(columnName.toLowerCase());
 };
 

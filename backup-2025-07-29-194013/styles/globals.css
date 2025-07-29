@@ -1,0 +1,385 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* SIDEBAR DARK THEME - RESTORE KE TAMPILAN SEMPURNA */
+.sidebar {
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  color: white;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.collapsed {
+  width: 75px;
+}
+
+/* SIDEBAR HEADER */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f7fafc;
+  letter-spacing: 1px;
+}
+
+.logo-subtitle {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+.toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #a0aec0;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.toggle-icon {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* NAVIGATION MENU */
+.nav-menu {
+  flex: 1;
+  padding: 20px 0;
+  overflow: hidden;
+}
+
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-item {
+  margin-bottom: 4px;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #a0aec0;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+  font-weight: 500;
+}
+
+.menu-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.menu-link.active {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.menu-icon {
+  width: 24px;
+  text-align: center;
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+.menu-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.sub-icon {
+  margin-left: auto;
+  font-size: 12px;
+  color: #a0aec0;
+  transition: all 0.2s ease;
+}
+
+/* SUBMENU STYLING */
+.submenu-wrapper {
+  position: relative;
+}
+
+.submenu-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.submenu-container {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 2px solid #667eea;
+  margin-left: 20px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 0 8px 8px 0;
+}
+
+.submenu {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.submenu-item {
+  margin-bottom: 2px;
+}
+
+.submenu-link {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.submenu-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.submenu-link.active {
+  background: rgba(102, 126, 234, 0.2);
+  color: white;
+}
+
+.sub-icon {
+  width: 20px;
+  text-align: center;
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+.sub-label {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+/* LAST UPDATE SECTION */
+.last-update-section {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.last-update-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.last-update-text {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #a0aec0;
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #a0aec0;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* SCROLLBAR STYLING */
+.submenu-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.submenu-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.submenu-container::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.6);
+  border-radius: 2px;
+}
+
+.submenu-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.8);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  
+  .sidebar.collapsed {
+    width: 100%;
+  }
+}
+
+/* Dashboard Layout */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: #f8fafc;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  position: relative;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed + .main-content {
+  margin-left: 75px;
+}
+
+/* Scrollable content area */
+.main-content main,
+.scrollable-content {
+  flex: 1;
+  padding: 20px 32px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 85px);
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .main-content main,
+  .scrollable-content {
+    padding: 16px;
+    height: calc(100vh - 75px);
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 480px) {
+  .main-content main,
+  .scrollable-content {
+    padding: 12px;
+    height: calc(100vh - 85px);
+  }
+}
+
+/* Performance Optimization */
+* {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* Image loading optimization */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

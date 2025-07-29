@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRoleAccess } from '../../hooks/useRoleAccess';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
 import { formatDateDisplay, formatDateForInput, isDateColumn } from '../../utils/dateFormatter';
 
-export default function Adjustment() {
-  const { user, loading: authLoading, canExportData, isReadOnly } = useRoleAccess('/transaction/adjustment');
+export default function NewRegister() {
+  const { user, loading: authLoading, canExportData, isReadOnly } = useRoleAccess('/transaction/new-register');
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   
   // SLICERS STATE
@@ -18,7 +18,7 @@ export default function Adjustment() {
   const [useDateRange, setUseDateRange] = useState(false);
 
   // DATA STATES
-  const [adjustmentData, setAdjustmentData] = useState([]);
+  const [newRegisterData, setNewRegisterData] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -38,7 +38,20 @@ export default function Adjustment() {
   const [slicerLoading, setSlicerLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  const fetchSlicerOptions = useCallback(async () => {
+  useEffect(() => {
+    fetchSlicerOptions();
+    fetchNewRegisterData();
+  }, []);
+
+  useEffect(() => {
+    fetchSlicerOptions();
+  }, [currency]);
+
+  useEffect(() => {
+    fetchNewRegisterData();
+  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage]);
+
+  const fetchSlicerOptions = async () => {
     try {
       setSlicerLoading(true);
       const params = new URLSearchParams();
@@ -46,7 +59,7 @@ export default function Adjustment() {
         params.append('selectedCurrency', currency);
       }
       
-      const response = await fetch(`/api/adjustment/slicer-options?${params}`);
+      const response = await fetch(`/api/new-register/slicer-options?${params}`);
       const result = await response.json();
       if (result.success) {
         setSlicerOptions(result.options);
@@ -61,9 +74,9 @@ export default function Adjustment() {
     } finally {
       setSlicerLoading(false);
     }
-  }, [currency, line]);
+  };
 
-  const fetchAdjustmentData = useCallback(async () => {
+  const fetchNewRegisterData = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -78,37 +91,25 @@ export default function Adjustment() {
         limit: pagination.recordsPerPage.toString()
       });
 
-      const response = await fetch(`/api/adjustment/data?${params}`);
+      const response = await fetch(`/api/new-register/data?${params}`);
       const result = await response.json();
       
       if (result.success) {
-        setAdjustmentData(result.data);
+        setNewRegisterData(result.data);
         setPagination(result.pagination);
       } else {
         console.error('Error fetching data:', result.error);
-        setAdjustmentData([]);
+        setNewRegisterData([]);
       }
     } catch (error) {
-      console.error('Error fetching adjustment data:', error);
-      setAdjustmentData([]);
+      console.error('Error fetching new register data:', error);
+      setNewRegisterData([]);
     } finally {
       setLoading(false);
     }
-  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage, pagination.recordsPerPage]);
+  };
 
-  useEffect(() => {
-    fetchSlicerOptions();
-    fetchAdjustmentData();
-  }, [fetchSlicerOptions, fetchAdjustmentData]);
-
-  useEffect(() => {
-    fetchSlicerOptions();
-  }, [fetchSlicerOptions]);
-
-  useEffect(() => {
-    fetchAdjustmentData();
-  }, [fetchAdjustmentData]);
-
+  // HANDLE MONTH SELECTION
   const handleMonthChange = (selectedMonth) => {
     setMonth(selectedMonth);
     setFilterMode('month');
@@ -146,7 +147,7 @@ export default function Adjustment() {
 
     try {
       setExporting(true);
-      const response = await fetch('/api/adjustment/export', {
+      const response = await fetch('/api/new-register/export', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +175,7 @@ export default function Adjustment() {
         const contentDisposition = response.headers.get('content-disposition');
         const filename = contentDisposition 
           ? contentDisposition.split('filename=')[1].replace(/"/g, '')
-          : 'adjustment_export.xlsx';
+          : 'new_register_export.xlsx';
         
         a.download = filename;
         document.body.appendChild(a);
@@ -206,7 +207,7 @@ export default function Adjustment() {
       <Sidebar user={user} onExpandedChange={setSidebarExpanded} />
       <div className={`dashboard-content ${sidebarExpanded ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
         <Header 
-          title="Adjustment"
+          title="New Register"
           user={user}
           sidebarExpanded={sidebarExpanded}
           setSidebarExpanded={setSidebarExpanded}
@@ -406,16 +407,16 @@ export default function Adjustment() {
             {/* EXPORT BUTTON */}
             <button
               onClick={handleExport}
-              disabled={isReadOnly || !canExportData || exporting || adjustmentData.length === 0}
+              disabled={isReadOnly || !canExportData || exporting || newRegisterData.length === 0}
               style={{
                 padding: '8px 16px',
                 borderRadius: '6px',
                 border: 'none',
                 fontSize: '14px',
                 fontWeight: '600',
-                backgroundColor: isReadOnly || !canExportData || adjustmentData.length === 0 ? '#f3f4f6' : '#10b981',
-                color: isReadOnly || !canExportData || adjustmentData.length === 0 ? '#9ca3af' : 'white',
-                cursor: isReadOnly || !canExportData || adjustmentData.length === 0 ? 'not-allowed' : 'pointer',
+                backgroundColor: isReadOnly || !canExportData || newRegisterData.length === 0 ? '#f3f4f6' : '#10b981',
+                color: isReadOnly || !canExportData || newRegisterData.length === 0 ? '#9ca3af' : 'white',
+                cursor: isReadOnly || !canExportData || newRegisterData.length === 0 ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease'
               }}
             >
@@ -441,9 +442,9 @@ export default function Adjustment() {
               fontSize: '18px',
               color: '#6b7280'
             }}>
-              Loading adjustment data...
+              Loading new register data...
             </div>
-          ) : adjustmentData.length === 0 ? (
+          ) : newRegisterData.length === 0 ? (
             <div style={{
               display: 'flex',
               justifyContent: 'center',
@@ -454,15 +455,15 @@ export default function Adjustment() {
             }}>
               <div style={{ fontSize: '48px' }}>📭</div>
               <div style={{ fontSize: '18px', color: '#6b7280' }}>
-                No adjustment data found for the selected filters
+                No new register data found for the selected filters
               </div>
             </div>
           ) : (
             <div className="data-table-container">
               <div className="table-header">
-                <h2>Adjustment Data (Page {pagination.currentPage} of {pagination.totalPages})</h2>
+                <h2>New Register Data (Page {pagination.currentPage} of {pagination.totalPages})</h2>
                 <p style={{ margin: '8px 0 0 0', color: '#6b7280', fontSize: '14px' }}>
-                  Showing {adjustmentData.length} of {pagination.totalRecords.toLocaleString()} records
+                  Showing {newRegisterData.length} of {pagination.totalRecords.toLocaleString()} records
                 </p>
               </div>
               
@@ -470,13 +471,13 @@ export default function Adjustment() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      {adjustmentData.length > 0 && Object.keys(adjustmentData[0]).map((column, index) => (
+                      {newRegisterData.length > 0 && Object.keys(newRegisterData[0]).map((column, index) => (
                         <th key={index}>{column.replace(/_/g, ' ').toUpperCase()}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {adjustmentData.map((row, rowIndex) => (
+                    {newRegisterData.map((row, rowIndex) => (
                       <tr key={rowIndex}>
                                                  {Object.entries(row).map(([column, value], colIndex) => (
                            <td key={colIndex}>
@@ -518,7 +519,7 @@ export default function Adjustment() {
                   </button>
                 </div>
               )}
-          </div>
+            </div>
           )}
         </div>
       </div>
