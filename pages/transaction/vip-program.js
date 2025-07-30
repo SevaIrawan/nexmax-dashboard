@@ -67,10 +67,11 @@ export default function VipProgram() {
         <div style={{ 
           marginTop: '185px',
           padding: '40px',
-          minHeight: 'calc(100vh - 185px)',
+          height: 'calc(100vh - 185px)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          overflow: 'hidden'
         }}>
           <div className="coming-soon-card">
             <div className="icon-large">💎</div>
@@ -85,25 +86,20 @@ export default function VipProgram() {
             <div className="status-badge">Coming Soon</div>
           </div>
         </div>
-
-        {/* Pagination Controls */}
-        <div className="pagination-controls">
-          <button>Previous</button>
-          <span>Page 1 of 10</span>
-          <button>Next</button>
-        </div>
       </div>
 
       <style jsx>{`
         .dashboard-container {
           display: flex;
-          min-height: 100vh;
+          height: 100vh;
           background: #f8f9fa;
+          overflow: hidden;
         }
         
         .dashboard-content {
           flex: 1;
           transition: margin-left 0.3s ease;
+          overflow: hidden;
         }
         
         .sidebar-expanded {
@@ -117,48 +113,49 @@ export default function VipProgram() {
         .coming-soon-card {
           background: white;
           border-radius: 16px;
-          padding: 60px;
+          padding: 40px;
           text-align: center;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-          max-width: 600px;
+          max-width: 500px;
           width: 100%;
         }
         
         .icon-large {
-          font-size: 5rem;
-          margin-bottom: 32px;
+          font-size: 4rem;
+          margin-bottom: 24px;
           opacity: 0.8;
         }
         
         .coming-soon-card h1 {
-          font-size: 2.5rem;
-          margin: 0 0 20px 0;
+          font-size: 2rem;
+          margin: 0 0 16px 0;
           color: #1f2937;
           font-weight: 700;
         }
         
         .coming-soon-card p {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: #6b7280;
-          margin: 0 0 40px 0;
+          margin: 0 0 32px 0;
           line-height: 1.6;
         }
         
         .features-list {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 16px;
-          margin-bottom: 40px;
+          gap: 12px;
+          margin-bottom: 32px;
         }
         
         .feature-item {
-          padding: 16px;
+          padding: 12px;
           background: #f8f9fa;
-          border-radius: 12px;
+          border-radius: 8px;
           font-weight: 500;
           color: #374151;
           border: 1px solid #e5e7eb;
           transition: all 0.3s ease;
+          font-size: 0.9rem;
         }
         
         .feature-item:hover {
@@ -176,16 +173,6 @@ export default function VipProgram() {
           font-weight: 600;
           font-size: 1rem;
           box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-        }
-        
-        .pagination-controls {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          gap: 16px;
-          padding: 20px;
-          background: #f8fafc;
-          border-top: 1px solid #e2e8f0;
         }
         
         @media (max-width: 768px) {

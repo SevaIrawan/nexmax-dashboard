@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRoleAccess } from '../../hooks/useRoleAccess';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
@@ -38,20 +38,7 @@ export default function Deposit() {
   const [slicerLoading, setSlicerLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  useEffect(() => {
-    fetchSlicerOptions();
-    fetchDepositData();
-  }, []);
-
-  useEffect(() => {
-    fetchSlicerOptions();
-  }, [currency]);
-
-  useEffect(() => {
-    fetchDepositData();
-  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage]);
-
-  const fetchSlicerOptions = async () => {
+  const fetchSlicerOptions = useCallback(async () => {
     try {
       setSlicerLoading(true);
       const params = new URLSearchParams();
@@ -74,9 +61,9 @@ export default function Deposit() {
     } finally {
       setSlicerLoading(false);
     }
-  };
+  }, [currency, line]);
 
-  const fetchDepositData = async () => {
+  const fetchDepositData = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -107,7 +94,20 @@ export default function Deposit() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage, pagination.recordsPerPage]);
+
+  useEffect(() => {
+    fetchSlicerOptions();
+    fetchDepositData();
+  }, [fetchSlicerOptions, fetchDepositData]);
+
+  useEffect(() => {
+    fetchSlicerOptions();
+  }, [currency, fetchSlicerOptions]);
+
+  useEffect(() => {
+    fetchDepositData();
+  }, [currency, line, year, month, dateRange, filterMode, pagination.currentPage, fetchDepositData]);
 
   // HANDLE MONTH SELECTION
   const handleMonthChange = (selectedMonth) => {

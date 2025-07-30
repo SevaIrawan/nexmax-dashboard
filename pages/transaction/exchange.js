@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRoleAccess } from '../../hooks/useRoleAccess';
 import Sidebar from '../../components/Sidebar';
 import Header from '../../components/Header';
@@ -43,16 +43,7 @@ export default function Exchange() {
   const [editData, setEditData] = useState({});
   const [updating, setUpdating] = useState(false);
 
-  useEffect(() => {
-    fetchSlicerOptions();
-    fetchExchangeData();
-  }, []);
-
-  useEffect(() => {
-    fetchExchangeData();
-  }, [month, dateRange, useDateRange, pagination.currentPage]);
-
-  const fetchSlicerOptions = async () => {
+  const fetchSlicerOptions = useCallback(async () => {
     try {
       setSlicerLoading(true);
       const response = await fetch('/api/exchange/slicer-options');
@@ -65,9 +56,9 @@ export default function Exchange() {
     } finally {
       setSlicerLoading(false);
     }
-  };
+  }, []);
 
-  const fetchExchangeData = async () => {
+  const fetchExchangeData = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -95,7 +86,16 @@ export default function Exchange() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [month, dateRange, useDateRange, pagination.currentPage, pagination.recordsPerPage]);
+
+  useEffect(() => {
+    fetchSlicerOptions();
+    fetchExchangeData();
+  }, [fetchSlicerOptions, fetchExchangeData]);
+
+  useEffect(() => {
+    fetchExchangeData();
+  }, [month, dateRange, useDateRange, pagination.currentPage, fetchExchangeData]);
 
 
 
